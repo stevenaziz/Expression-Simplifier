@@ -105,6 +105,28 @@ bool ExpressionTree::BuildExpressionTree(const string& postfix) {
  * @return true if postfix valid and tree was built, false otherwise
  */
 TreeNode* ExpressionTree::SimplifyTree(TreeNode* tree) {
+    if (IsOperator(tree->Left()->Data())) {
+        tree->SetLeft(SimplifyTree(tree->Left()));
+    }
+    if (IsOperator(tree->Right()->Data())) {
+        tree->SetRight(SimplifyTree(tree->Right()));
+    }
+    if (IsNumber(tree->Left()->Data()) && IsNumber(tree->Right()->Data())) {
+        int left = stoi(tree->Left()->Data());
+        int right = stoi(tree->Right()->Data());
+        int result;
+        if (tree->Data() == "+") {
+            result = left + right;
+        } else if (tree->Data() == "*") {
+            result = left * right;
+        }
+        else {
+            result = left - right;
+        }
+        delete tree;
+        return new TreeNode(NumberOperand, std::to_string(result));
+    }
+
     return tree;
 }
 
