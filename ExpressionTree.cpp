@@ -126,6 +126,64 @@ TreeNode* ExpressionTree::SimplifyTree(TreeNode* tree) {
         delete tree;
         return new TreeNode(NumberOperand, std::to_string(result));
     }
+     else if (tree->Data() == "*") {
+        if (tree->Left()->IsZero() || tree->Right()->IsZero()) {
+            delete tree;
+            return new TreeNode(NumberOperand, "0");
+        }
+        else if (tree->Left()->IsOne()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, tree->Right()->Data());
+            delete tree;
+            return tmp;
+        }
+        else if (tree->Right()->IsOne()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, tree->Left()->Data());
+            delete tree;
+            return tmp;
+        }
+        else if (tree->Left()->IsNumber()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, tree->Left()->Data() + tree->Right()->Data());
+            delete tree;
+            return tmp;
+        }
+        else if (tree->Right()->IsNumber()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, tree->Right()->Data() + tree->Left()->Data());
+            delete tree;
+            return tmp;
+        }
+    }
+    else if (tree->Data() == "+") {
+        if (tree->Left()->Data() == tree->Right()->Data()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, "2" + tree->Left()->Data());
+            delete tree;
+            return tmp;
+        }
+        else if (tree->Left()->IsZero()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, tree->Right()->Data());
+            delete tree;
+            return tmp;
+        } else if (tree->Right()->IsZero()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, tree->Left()->Data());
+            delete tree;
+            return tmp;
+        }
+    }
+    else if (tree->Data() == "-") {
+        if (tree->Left()->Data() == tree->Right()->Data()) {
+            delete tree;
+            return new TreeNode(NumberOperand, "0");
+        }
+        else if (tree->Left()->IsZero()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, "-" + tree->Right()->Data());
+            delete tree;
+            return tmp;
+        } else if (tree->Right()->IsZero()) {
+            TreeNode* tmp = new TreeNode(VariableOperand, tree->Left()->Data());
+            delete tree;
+            return tmp;
+        }
+    }
+
 
     return tree;
 }
