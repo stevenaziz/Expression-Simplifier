@@ -15,6 +15,8 @@
 TreeNode::TreeNode(NodeType nodeType, string data) {
     _nodeType = nodeType;
     _data = data;
+    _left = nullptr;
+    _right = nullptr;
 }
 
 /**
@@ -22,8 +24,8 @@ TreeNode::TreeNode(NodeType nodeType, string data) {
  * Frees allocated memory
  */
 TreeNode::~TreeNode() {
-    delete _left;
-    delete _right;
+    if (_left != nullptr) { delete _left; }
+    if (_right != nullptr) { delete _right; }
 }
 
 
