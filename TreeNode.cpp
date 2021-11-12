@@ -13,7 +13,8 @@
  * @param data an operator (+, -, *), a number, or a variable name
  */
 TreeNode::TreeNode(NodeType nodeType, string data) {
-    assert(false);
+    _nodeType = nodeType;
+    _data = data;
 }
 
 /**
@@ -21,7 +22,8 @@ TreeNode::TreeNode(NodeType nodeType, string data) {
  * Frees allocated memory
  */
 TreeNode::~TreeNode() {
-    assert(false);
+    delete _left;
+    delete _right;
 }
 
 

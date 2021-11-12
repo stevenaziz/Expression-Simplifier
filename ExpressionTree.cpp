@@ -24,7 +24,7 @@ bool IsOperator(string token);
  * Creates an "null tree"
  */
 ExpressionTree::ExpressionTree() {
-    assert(false);
+    _root = nullptr;
 }
 
 /**
@@ -32,7 +32,7 @@ ExpressionTree::ExpressionTree() {
  * Frees the dynamic memory allocated for the tree
  */
 ExpressionTree::~ExpressionTree() {
-    assert(false);
+    delete _root;
 }
 
 /**
@@ -46,10 +46,47 @@ ExpressionTree::~ExpressionTree() {
 bool ExpressionTree::BuildExpressionTree(const string& postfix) {
     stringstream ss(postfix);
     string token;
+    Stack<TreeNode*> expTree;
+    TreeNode* nodeToDelete;
 
     while(ss >> token) {
+        if (IsNumber(token) || IsVariable(token)) {
+            if (IsNumber(token)) { expTree.Push(new TreeNode(::NumberOperand, token)); }
+            else { expTree.Push(new TreeNode(::VariableOperand, token)); }
+        }
+        else if (IsOperator(token)) {
+            if (expTree.Size() < 2) {
+                cout << "ERROR: operator found with no operands" << endl;
+                for (int i = expTree.Size(); i > 0; i--) {
+                    nodeToDelete = expTree.Pop();
+                    delete nodeToDelete;
+                }
+                return false;
+            }
+            TreeNode* expression = new TreeNode(Operator, token);
+            expression->SetRight(expTree.Pop());
+            expression->SetLeft(expTree.Pop());
+            expTree.Push(expression);
+        }
+        else {
+            cout << "ERROR: input " << token << " not valid" << endl;
+            for (int i = expTree.Size(); i > 0; i--) {
+                nodeToDelete = expTree.Pop();
+                delete nodeToDelete;
+            }
+            return false;
+        }
     }
-    return false;
+    if (expTree.Size() != 1) {
+        cout << "ERROR: postfix expression is not valid" << endl;
+        for (int i = expTree.Size(); i > 0; i--) {
+            nodeToDelete = expTree.Pop();
+            delete nodeToDelete;
+        }
+        return false;
+    }
+    _root = expTree.Pop();
+    return true;
 }
 
 /**
